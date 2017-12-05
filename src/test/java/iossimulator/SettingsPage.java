@@ -3,6 +3,7 @@ package iossimulator;
 import io.appium.java_client.ios.IOSDriver;
 import io.appium.java_client.ios.IOSElement;
 import io.appium.java_client.pagefactory.AppiumFieldDecorator;
+import io.appium.java_client.pagefactory.iOSFindBy;
 import io.appium.java_client.pagefactory.iOSXCUITFindBy;
 import org.openqa.selenium.support.PageFactory;
 
@@ -21,17 +22,20 @@ public class SettingsPage {
     @iOSXCUITFindBy(iOSClassChain = "**/XCUIElementTypeSwitch[`name=\"ENABLE SOUNDS\"`]")
     private IOSElement soundToggle;
 
+    @iOSFindBy(id = "Cancel")
+    IOSElement cancelButton;
+
 
     public void switchSoundToggle(){
         soundToggle.click();
 
-        /* Tap is working */
+        /* Tap using TouchAction is working */
         /*TouchAction action = new TouchAction(driver);
         action.tap(soundToggle).perform();*/
     }
 
     public String getSoundToggleValue(){
-        return soundToggle.getAttribute("Value");
+        return soundToggle.getAttribute("value");
     }
 
 

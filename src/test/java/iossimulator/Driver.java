@@ -9,6 +9,8 @@ import java.util.concurrent.TimeUnit;
 
 public class Driver {
 
+    private static String iosAppLocation = "/Users/sergeyfedorov/Downloads/BoardBank.app";
+
     private static IOSDriver<IOSElement> driverInstance;
     private Driver(){}
 
@@ -20,14 +22,12 @@ public class Driver {
         return driverInstance;
     }
 
-
     private static DesiredCapabilities getCapabilitiesIOS6sBoardBankApp(){
         DesiredCapabilities capabilities = new DesiredCapabilities();
         capabilities.setCapability("platformName", "iOS");
         capabilities.setCapability("deviceName", "iPhone 6s");
         capabilities.setCapability("platformVersion", "11.1");
-        capabilities.setCapability(  "app",
-                "/Users/sergeyfedorov/Documents/BoardBank/Build/Products/Debug-iphonesimulator/BoardBank.app");
+        capabilities.setCapability(  "app", iosAppLocation);
         capabilities.setCapability(  "automationName", "XCUITest");
         return capabilities;
 

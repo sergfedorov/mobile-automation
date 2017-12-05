@@ -25,8 +25,18 @@ public class NewPlayerPage {
     @iOSXCUITFindBy(iOSClassChain = "**/XCUIElementTypeCell[2]/XCUIElementTypeTextField[1]")
     IOSElement playerBalanceField;
 
+    @iOSFindBy(id = "cannon_filled")
+    IOSElement categoryItemCannon;
+    @iOSFindBy(id = "car")
+    IOSElement categoryItemCar;
     @iOSFindBy(id = "cat")
-    IOSElement categoryItem;
+    IOSElement categoryItemCat;
+    @iOSFindBy(id = "dog")
+    IOSElement categoryItemDog;
+    @iOSFindBy(id = "hat")
+    IOSElement categoryItemHat;
+    @iOSFindBy(id = "horse")
+    IOSElement categoryItemHorse;
 
     @iOSXCUITFindBy(iOSClassChain = "**/XCUIElementTypeStaticText[`name == \"Add Player\"`]")
     IOSElement addPlayerButton;
@@ -34,7 +44,6 @@ public class NewPlayerPage {
 
     public void addUser(String playerName){
         playerNameField.sendKeys(playerName);
-        categoryItem.click();
         addPlayerButton.click();
     }
 
