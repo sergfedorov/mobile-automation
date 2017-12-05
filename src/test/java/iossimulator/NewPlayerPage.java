@@ -13,18 +13,20 @@ import java.util.concurrent.TimeUnit;
 public class NewPlayerPage {
 
     IOSDriver driver;
+
     public NewPlayerPage() throws MalformedURLException {
         this.driver = Driver.getIOSDriver();
         PageFactory.initElements(new AppiumFieldDecorator(driver, 5, TimeUnit.SECONDS), this);
 
     }
 
+
     @iOSXCUITFindBy(iOSClassChain = "**/XCUIElementTypeCell[1]/XCUIElementTypeTextField[1]")
     IOSElement playerNameField;
-
     @iOSXCUITFindBy(iOSClassChain = "**/XCUIElementTypeCell[2]/XCUIElementTypeTextField[1]")
     IOSElement playerBalanceField;
 
+    /* Categories */
     @iOSFindBy(id = "cannon_filled")
     IOSElement categoryItemCannon;
     @iOSFindBy(id = "car")
@@ -46,7 +48,5 @@ public class NewPlayerPage {
         playerNameField.sendKeys(playerName);
         addPlayerButton.click();
     }
-
-
 
 }

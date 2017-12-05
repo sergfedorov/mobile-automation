@@ -19,17 +19,17 @@ import java.util.concurrent.TimeUnit;
 
 public class DashboardPage {
 
-    private int player;
-
     IOSDriver<IOSElement> driver;
+
     public DashboardPage() throws MalformedURLException {
         this.driver = Driver.getIOSDriver();
         PageFactory.initElements(new AppiumFieldDecorator(driver, 5, TimeUnit.SECONDS), this);
     }
 
 
-    /* Top Bar */
+    /***** Top Bar *****/
     //@iOSFindBy(id = "Add")
+    /* Using iOS Predicate*/
     @iOSXCUITFindBy(iOSNsPredicate = "type == 'XCUIElementTypeButton' AND name == 'Add'")
     IOSElement addPlayer;
     @iOSXCUITFindBy(iOSClassChain = "**/XCUIElementTypeNavigationBar[`name==\"BoardBank\"`]/XCUIElementTypeButton[1]")
@@ -38,9 +38,10 @@ public class DashboardPage {
     IOSElement dashBoardLabel;
 
 
-    /* Dashboard */
+    /***** Dashboard *****/
     //@iOSXCUITFindBy(iOSClassChain = "**/XCUIElementTypeCell[1]")
-    @iOSXCUITFindBy(iOSClassChain = "**/XCUIElementTypeStaticText[`name == \"Bank\"`]")
+    //@iOSXCUITFindBy(iOSClassChain = "**/XCUIElementTypeStaticText[`name == \"Bank\"`]")
+    @iOSFindBy(id = "Bank")
     IOSElement bankOnBoard;
 
     @iOSXCUITFindBy(iOSClassChain = "**/XCUIElementTypeCell")
@@ -57,7 +58,7 @@ public class DashboardPage {
     IOSElement secondPlayerOnBoard;
 
 
-    /* User Menu */
+    /***** User Menu *****/
     @iOSXCUITFindBy(iOSClassChain = "**/XCUIElementTypeOther[1]/XCUIElementTypeOther/XCUIElementTypeStaticText[1]")
     IOSElement userMenuUserNameAndBalance;
     @iOSFindBy(id = "Add $200")
@@ -74,7 +75,7 @@ public class DashboardPage {
     IOSElement userMenuRenameField;
 
 
-    /* Transfer Money dialog */
+    /***** Transfer Money dialog *****/
     @iOSXCUITFindBy(iOSClassChain = "**/XCUIElementTypeTextField")
     IOSElement transferMoneyField;
     @iOSFindBy(id = "OK")
@@ -83,29 +84,32 @@ public class DashboardPage {
     IOSElement transferMoneyDialogCancelButton;
 
 
-    public void moneyTransfer(String money){
+    public void moneyTransfer(String playerFrom, String playerTo, String money){
         TouchAction action = new TouchAction(driver);
-        action.press(firstPlayerOnBoard).waitAction(Duration.ofMillis(250)).moveTo(secondPlayerOnBoard).release().perform();
+        action.
+                press(getPlayerByName(playerFrom)).
+                waitAction(Duration.ofMillis(250)).
+                moveTo(getPlayerByName(playerTo)).
+                release().perform();
         transferMoneyField.sendKeys(money);
         transferMoneyDialogOkButton.click();
     }
 
-    public void userRearrange(){
+
+    public void userRearrange(String playerFrom, String playerTo){
         TouchAction action = new TouchAction(driver);
-        action.press(firstPlayerOnBoard).waitAction(Duration.ofMillis(500)).moveTo(secondPlayerOnBoard).release().perform();
+        action.
+                press(getPlayerByName(playerFrom)).
+                waitAction(Duration.ofMillis(500)).
+                moveTo(getPlayerByName(playerTo)).
+                release().perform();
         /* Does not work with longPress for some reason */
         /* appium Original error: -[NSNull doubleValue]: unrecognized selector sent to instance */
         //action.longPress(firstPlayerOnBoard).moveTo(secondPlayerOnBoard).release().perform();
     }
 
-    /*public String getFirstPlayerMoneyAmount(){
-        return firstPlayerOnBoardMoneyAmmount.getText();
-    }
 
-    public String getFirstPlayerName(){
-        return firstPlayerOnBoardName.getText();
-    }*/
-
+    /* Using XCTest*/
     public void tapAddPlayerUsingXCTest(){
         JavascriptExecutor js = driver;
         Map<String, Object> params = new HashMap<>();
@@ -114,14 +118,37 @@ public class DashboardPage {
         js.executeScript("mobile: tap", params);
     }
 
-    public int playersNumber(){
+
+    public int playersCounter(){
+        waitForDashboardToBeVisible();
         List<IOSElement> players = driver.findElementsByIosClassChain("**/XCUIElementTypeCell");
         return players.size() - 1;
     }
 
+
     public void waitForDashboardToBeVisible(){
-        (new WebDriverWait(driver, 5)).until(ExpectedConditions.visibilityOf(dashBoardLabel));
+        (new WebDriverWait(driver, 5)).
+                until(ExpectedConditions.attributeContains(bankOnBoard, "visible", "true"));
     }
 
+
+    public IOSElement getPlayerByName(String playerName){
+        String string = String.format("**/XCUIElementTypeStaticText[`name==\"%s\"`]", playerName);
+        return driver.findElementByIosClassChain(string);
+    }
+
+
+    public void deleteAllPlayers(int playersNumber){
+        for(int i=0; i<playersNumber; i++){
+            waitForDashboardToBeVisible();
+            firstPlayerOnBoard.click();
+            userMenuDeletePlayerButton.click();
+        }
+    }
+
+    public boolean isPlayerPresent(String playerName){
+        String string = String.format("**/XCUIElementTypeStaticText[`name==\"%s\"`]", playerName);
+        return !driver.findElementsByIosClassChain(string).isEmpty();
+    }
 
 }

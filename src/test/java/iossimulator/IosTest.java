@@ -18,67 +18,42 @@ public class IosTest {
         settingsPage = new SettingsPage();
     }
 
-    @BeforeGroups(groups = "TestData:TwoPlayers")
-    public void testDataCreateTwoPlayers(){
-        dashboardPage.addPlayer.click();
+    @BeforeGroups(groups = "TestData:CreateFourPlayers")
+    public void testDataCreateFourPlayers(){
+        dashboardPage.tapAddPlayerUsingXCTest();
         newPlayerPage.addUser("Player1");
         dashboardPage.addPlayer.click();
         newPlayerPage.addUser("Player2");
+        dashboardPage.addPlayer.click();
+        newPlayerPage.addUser("PlayerForRename");
+        dashboardPage.addPlayer.click();
+        newPlayerPage.addUser("PlayerForDelete");
     }
 
-    @AfterGroups(groups = "TestData:TwoPlayers")
-    public void testDataDeleteTwoPlayers(){
-        dashboardPage.firstPlayerOnBoard.click();
-        dashboardPage.userMenuDeletePlayerButton.click();
-        dashboardPage.firstPlayerOnBoard.click();
-        dashboardPage.userMenuDeletePlayerButton.click();
+    @AfterTest
+    public void deleteAllPlayers(){
+        dashboardPage.deleteAllPlayers(dashboardPage.playersCounter());
     }
 
 
-    /* TESTS */
+    /***** TESTS *****/
 
     @Test(priority = 0)
     public void createPlayerTest(){
-        String playerName = "Player1";
-        String playerBalance = "1.000";
-
         dashboardPage.addPlayer.click();
-        newPlayerPage.playerNameField.sendKeys(playerName);
+        newPlayerPage.playerNameField.sendKeys("PlayerCreatedByTest");
         newPlayerPage.playerBalanceField.clear();
-        newPlayerPage.playerBalanceField.sendKeys(playerBalance);
+        newPlayerPage.playerBalanceField.sendKeys("1.000");
         newPlayerPage.categoryItemDog.click();
         newPlayerPage.addPlayerButton.click();
 
-        Assert.assertEquals(dashboardPage.firstPlayerOnBoardName.getText(), playerName);
-        Assert.assertEquals(dashboardPage.firstPlayerOnBoardMoneyAmmount.getText(), "$"+playerBalance);
+        Assert.assertEquals(dashboardPage.firstPlayerOnBoardName.getText(), "PlayerCreatedByTest");
+        Assert.assertEquals(dashboardPage.firstPlayerOnBoardMoneyAmmount.getText(), "$1.000");
+
+        dashboardPage.deleteAllPlayers(dashboardPage.playersCounter());
     }
 
-    @Test(priority = 1)
-    public void renamePlayerTest(){
-        String newPlayerName = "Player Renamed";
-
-        dashboardPage.firstPlayerOnBoard.click();
-        dashboardPage.userMenuRenamePlayerButton.click();
-        dashboardPage.userMenuRenameField.sendKeys(newPlayerName);
-        dashboardPage.userMenuOkButton.click();
-
-        Assert.assertEquals(dashboardPage.firstPlayerOnBoardName.getText(), newPlayerName);
-    }
-
-    @Test(priority = 2)
-    public void deletePlayerTest() throws InterruptedException {
-        int playersNumberBeforeDelete = dashboardPage.playersNumber();
-
-        dashboardPage.firstPlayerOnBoard.click();
-        dashboardPage.userMenuDeletePlayerButton.click();
-        dashboardPage.waitForDashboardToBeVisible();
-
-        int playersNumberAfterDelete = dashboardPage.playersNumber();
-
-        Assert.assertEquals(playersNumberBeforeDelete-1, playersNumberAfterDelete);
-    }
-
-    @Test(priority = 3)
+    @Test
     public void switchSoundToggleTest(){
         dashboardPage.settingsButton.click();
         Assert.assertEquals(settingsPage.getSoundToggleValue(), "1");
@@ -87,17 +62,42 @@ public class IosTest {
         settingsPage.cancelButton.click();
     }
 
-    @Test(groups="TestData:TwoPlayers", priority = 4)
+    @Test(groups = "TestData:CreateFourPlayers")
+    public void renamePlayerTest() {
+        dashboardPage.getPlayerByName("PlayerForRename").click();
+        dashboardPage.userMenuRenamePlayerButton.click();
+        dashboardPage.userMenuRenameField.sendKeys("RenamedPlayer");
+        dashboardPage.userMenuOkButton.click();
+        dashboardPage.waitForDashboardToBeVisible();
+
+        Assert.assertEquals(dashboardPage.isPlayerPresent("PlayerForRename"), false);
+        Assert.assertEquals(dashboardPage.getPlayerByName("RenamedPlayer").getText(), "RenamedPlayer");
+    }
+
+    @Test(groups = "TestData:CreateFourPlayers")
+    public void deletePlayerTest() {
+        int playersNumberBeforeDelete = dashboardPage.playersCounter();
+
+        dashboardPage.getPlayerByName("PlayerForDelete").click();
+        dashboardPage.userMenuDeletePlayerButton.click();
+
+        int playersNumberAfterDelete = dashboardPage.playersCounter();
+
+        Assert.assertEquals(dashboardPage.isPlayerPresent("PlayerForDelete"), false);
+        Assert.assertEquals(playersNumberBeforeDelete-1, playersNumberAfterDelete);
+    }
+
+    @Test(groups = "TestData:CreateFourPlayers")
     public void moneyTransferTest(){
         Assert.assertEquals(dashboardPage.firstPlayerOnBoardMoneyAmmount.getText(), "$1.500");
-        dashboardPage.moneyTransfer("500");
+        dashboardPage.moneyTransfer("Player1", "Player2", "500");
         Assert.assertEquals(dashboardPage.firstPlayerOnBoardMoneyAmmount.getText(), "$1.000");
     }
 
-    @Test(groups="TestData:TwoPlayers", priority = 5)
+    @Test(groups = "TestData:CreateFourPlayers")
     public void userRearrangeTest(){
         Assert.assertEquals(dashboardPage.firstPlayerOnBoardName.getText(), "Player1");
-        dashboardPage.userRearrange();
+        dashboardPage.userRearrange("Player1", "Player2");
         Assert.assertEquals(dashboardPage.firstPlayerOnBoardName.getText(), "Player2");
     }
 

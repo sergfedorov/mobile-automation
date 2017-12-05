@@ -13,6 +13,7 @@ import java.util.concurrent.TimeUnit;
 public class SettingsPage {
 
     IOSDriver driver;
+
     public SettingsPage() throws MalformedURLException {
         this.driver = Driver.getIOSDriver();
         PageFactory.initElements(new AppiumFieldDecorator(driver, 5, TimeUnit.SECONDS), this);
@@ -29,7 +30,7 @@ public class SettingsPage {
     public void switchSoundToggle(){
         soundToggle.click();
 
-        /* Tap using TouchAction is working */
+        /* Tap using TouchAction */
         /*TouchAction action = new TouchAction(driver);
         action.tap(soundToggle).perform();*/
     }
