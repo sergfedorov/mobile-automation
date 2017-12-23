@@ -30,7 +30,7 @@ public class BuzzfeedPage{
         PageFactory.initElements(new AppiumFieldDecorator(androidEmulatorDriver, 5, TimeUnit.SECONDS), this);
         this.screenHeight = androidEmulatorDriver.manage().window().getSize().getHeight();
         this.screenWidth = androidEmulatorDriver.manage().window().getSize().getWidth();
-        customWait = new WebDriverWait(androidEmulatorDriver, 5);
+        customWait = new WebDriverWait(androidEmulatorDriver, 10);
         touchAction = new TouchAction(androidEmulatorDriver);
     }
 

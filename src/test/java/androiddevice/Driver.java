@@ -27,7 +27,7 @@ public class Driver {
                 e.printStackTrace();
             }
 
-            driverInstance.manage().timeouts().implicitlyWait(20, TimeUnit.SECONDS);
+            driverInstance.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
         }
         return driverInstance;
     }
@@ -80,7 +80,7 @@ public class Driver {
                 e.printStackTrace();
             }
 
-            driverInstance.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+            driverInstance.manage().timeouts().implicitlyWait(20, TimeUnit.SECONDS);
         }
         return driverInstance;
     }
@@ -91,17 +91,6 @@ public class Driver {
         capabilities.setCapability("deviceName", "dev123");
         capabilities.setCapability(  "appPackage","com.buzzfeed.android");
         capabilities.setCapability(  "appActivity", "com.buzzfeed.android.activity.PagerActivity");
-        return capabilities;
-
-    }
-
-
-    private static DesiredCapabilities getCapabilitiesAndroidDeviceAutoriaApp(){
-        DesiredCapabilities capabilities = new DesiredCapabilities();
-        capabilities.setCapability("platformName", "Android");
-        capabilities.setCapability("deviceName", "Galaxy S4");
-        capabilities.setCapability(  "appPackage","com.ria.auto");
-        capabilities.setCapability(  "appActivity", "com.ria.auto.SearchForm.SearchFormActivity");
         return capabilities;
 
     }
