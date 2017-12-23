@@ -23,7 +23,7 @@ public class AndroidTest {
 
     @BeforeMethod
     public void launch(){
-        Driver.startApp();
+        Driver.startAliexpressApp();
         generalPage.closePopUpIfDisplayed();
     }
 

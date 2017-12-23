@@ -27,7 +27,7 @@ public class Driver {
                 e.printStackTrace();
             }
 
-            driverInstance.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+            driverInstance.manage().timeouts().implicitlyWait(20, TimeUnit.SECONDS);
         }
         return driverInstance;
     }
@@ -39,10 +39,14 @@ public class Driver {
         }
     }
 
-    public static void startApp(){
+    public static void startAliexpressApp(){
         if(!driverInstance.currentActivity().contains("home.MainActivity")) {
             driverInstance.launchApp();
         }
+    }
+
+    public static void startBuzzfeedApp(){
+            driverInstance.launchApp();
     }
 
     public static void closeApp(){
@@ -66,6 +70,21 @@ public class Driver {
 
     }
 
+
+    public static AndroidDriver<AndroidElement> getAndroidEmulatorDriver() {
+        if(driverInstance == null){
+            try {
+                driverInstance = new AndroidDriver<>(new URL("http://127.0.0.1:4723/wd/hub"),
+                        getCapabilitiesAndroidEmulatorBuzzfeedApp());
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
+
+            driverInstance.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+        }
+        return driverInstance;
+    }
+
     private static DesiredCapabilities getCapabilitiesAndroidEmulatorBuzzfeedApp(){
         DesiredCapabilities capabilities = new DesiredCapabilities();
         capabilities.setCapability("platformName", "Android");
@@ -75,6 +94,7 @@ public class Driver {
         return capabilities;
 
     }
+
 
     private static DesiredCapabilities getCapabilitiesAndroidDeviceAutoriaApp(){
         DesiredCapabilities capabilities = new DesiredCapabilities();
